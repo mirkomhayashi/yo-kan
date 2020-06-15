@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', "On");
 session_start();
 header('X-FRAME-OPTIONS: SAMEORIGIN'); //クリックジャッキング対策
 function hsc($str){return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');} //htmlspecialchars定義関数
@@ -58,8 +59,8 @@ echo ''."\n";
 //追加の場合
 if(isset($_POST["user_name"])) {
 
-	$id_length = mb_strlen($_POST["user_name"]);
-	$ps_length = mb_strlen($_POST["password"]);
+	$id_length = strlen(($_POST["user_name"]);
+	$ps_length = strlen(($_POST["password"]);
 	if($ps_length != 64){
 		echo '【エラー】不正なパスワードです。';
 		

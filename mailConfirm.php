@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', "On");
 session_cache_expire(0);
 session_cache_limiter('private_no_expire'); //戻るボタンのWebページの有効期限切れ対策
 session_start();

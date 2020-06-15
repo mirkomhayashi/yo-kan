@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', "On");
 session_start();
 header('X-FRAME-OPTIONS: SAMEORIGIN'); //クリックジャッキング対策
 function hsc($str){return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');} //htmlspecialchars定義関数

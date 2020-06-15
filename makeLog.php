@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', "On");
 $flag = true ; //ログファイルがあるかどうかの判定につかうフラグ
 function makeLog($logText) {
 
@@ -45,11 +46,7 @@ function makeLog($logText) {
 	date_default_timezone_set('Asia/Tokyo');
 	$rec_time = date("Y-m-d").'T'.date("H:i:s");
 
-	//メモリ上の配列に追加
-	//if(!$log_data || $log_data == null){
-		$log_data = [];
-	//}
-	
+	$log_data = [];	
 	if(count($log_data) < 100){ 
 		$log_data[] = $rec_time.' ## '.$_SERVER["REMOTE_ADDR"].' ## '.$logText ;
 	}else{
@@ -61,7 +58,6 @@ function makeLog($logText) {
 	//書き込むテキストの生成
 	$inputText = '<?php'."\n";
 	$inputText .= '$log_data = '.var_export($log_data,true).' ;'."\n"; 
-	//$inputText .= 'print_r($log_data);'."\n"; 
 	$inputText .= '?>'."\n";	
 
 	$fp = fopen("./log/".$fileNum.".php", "a"); // ロックをかけるためaモードでオープン

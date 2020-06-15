@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', "On");
 session_start();
 header('X-FRAME-OPTIONS: SAMEORIGIN'); //クリックジャッキング対策
 require_once './makeLog.php'; //ログファイル書き込み関数を呼び出し

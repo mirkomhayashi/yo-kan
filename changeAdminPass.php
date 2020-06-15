@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', "On");
 session_start();
 header('X-FRAME-OPTIONS: SAMEORIGIN'); //クリックジャッキング対策
 function hsc($str){return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');} //htmlspecialchars
@@ -56,7 +57,7 @@ if(isset($_POST["password1"])) { //ポストがある
 		$passHash2  = hash("sha256",$passHash2);
 	}
 
-	$ps_length = mb_strlen($passHash1);
+	$ps_length = strlen(($passHash1);
 	if($ps_length != 64 || $passHash1 != $passHash2){
 		echo '不正なパスワードです。'."\n";
 		

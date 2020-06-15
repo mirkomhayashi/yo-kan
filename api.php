@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', "On");
 //CORSする場合はヘッダーをこうする。
 header("Access-Control-Allow-Origin: *");
 // 文字コード設定
