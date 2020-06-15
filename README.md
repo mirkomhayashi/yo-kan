@@ -19,7 +19,7 @@ PHPが動くサーバーであれば、実行ファイルを設置するだけ�
 * MySQLなどのRDBMSはデータベースは不要です。
  
 # Installation
-このリポジトリをCloneし、FTPやGITなどお好みの方法で、PHPが動作するWEBサーバーへすべてのファイルをアップロードしてください。
+このリポジトリのファイル・ディレクトリをダウンロード（Clone）し、FTPやGITなどお好みの方法で、PHPが動作するWEBサーバーへすべてまとめてアップロードしてください。
 ```bash
 pip install huga_package
 ```
