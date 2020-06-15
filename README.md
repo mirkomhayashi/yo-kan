@@ -37,7 +37,7 @@ SSL未対応（http）のサーバーの場合は、ログインIDやパスワ�
 林　正洋
  
 # License
-[CCO](https://creativecommons.org/publicdomain/zero/1.0/deed.ja).
+[CCO](https://creativecommons.org/publicdomain/zero/1.0/deed.ja)
 
 
 
