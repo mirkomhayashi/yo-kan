@@ -20,18 +20,11 @@ PHPが動くサーバーであれば、実行ファイルを設置するだけ�
  
 # Installation
 このリポジトリのファイル・ディレクトリをダウンロード（Clone）し、FTPやGITなどお好みの方法で、PHPが動作するWEBサーバーへすべてまとめてアップロードしてください。
-```bash
-pip install huga_package
-```
 
 # Usage
-DEMOの実行方法など、"hoge"の基本的な使い方を説明する
- 
-```bash
-git clone https://github.com/hoge/~
-cd examples
-python demo.py
-```
+WEBブラウザで、設置したURL（ルートディレクトリ）にアクセスしてください。
+まず login.php にて「管理者アカウント」の作成を求められますので、ID、パスワード、メールアドレスを入力しアカウントを作成してください。
+
  
 # Note
 注意点などがあれば書く
