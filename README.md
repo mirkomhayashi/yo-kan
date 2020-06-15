@@ -10,10 +10,6 @@ Yo-KAN は 無料レンタルサーバーでも超余裕で動作します。<br
 * <a href="https://ss1.xrea.com/yookan.s1010.xrea.com/" target="_blank">XREA Free（無料プラン）に設置したデモ（SSL対応）</a><br>
 * 流行りの <a href="https://yo-kan.herokuapp.com/" target="_blank">Herokuでデプロイ</a><br>
  
-# Features
-Yo-KAN が目指すところ。それは小規模の自治体や企業、NPO、シビックテック等が、自前で構築し自力で運用できるオープンデータストア。
-PHPが動くサーバーであれば、実行ファイルを設置するだけでサクサク動きます。
-
 # Requirement
 * PHP 7.0 以上（5系のPHPは未確認）
 * MySQLなどのデータベースは不要です。
