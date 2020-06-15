@@ -19,14 +19,12 @@ PHPが動くサーバーであれば、実行ファイルを設置するだけ�
 * MySQLなどのRDBMSはデータベースは不要です。
  
 # Installation
-* このリポジトリをCloneし、FTPやGITなどお好みの方法で、PHPが動作するWEBサーバーへすべてのファイルをアップロードしてください。
-
+このリポジトリをCloneし、FTPやGITなどお好みの方法で、PHPが動作するWEBサーバーへすべてのファイルをアップロードしてください。
 ```bash
 pip install huga_package
 ```
- 
+
 # Usage
- 
 DEMOの実行方法など、"hoge"の基本的な使い方を説明する
  
 ```bash
@@ -36,13 +34,10 @@ python demo.py
 ```
  
 # Note
- 
 注意点などがあれば書く
  
 # Author
- 
 作成情報を列挙する
- 
 * 作成者
 * 所属
 * E-mail
