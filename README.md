@@ -34,19 +34,10 @@ SSL未対応（http）のサーバーの場合は、ログインIDやパスワ�
 ログイン時にパスワードを5回連続誤ると、そのアカウントはロックされます。管理者アカウントがロックされると、解除するためのメールが管理者へ送信されます。
 
 # Author
-作成情報を列挙する
-* 作成者
-* 所属
-* E-mail
+林　正洋
  
 # License
-ライセンスを明示する
- 
-"hoge" is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
- 
-社内向けなら社外秘であることを明示してる
- 
-"hoge" is Confidential.
+Yo-KAN is under [CCO license](https://creativecommons.org/publicdomain/zero/1.0/deed.ja).
 
 
 
