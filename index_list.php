@@ -121,14 +121,17 @@ echo '</style>'."\n";
 
 <!-- ///////////// 検索ボックスの生成 ///////////// -->
 <?php
+$sessionStr = "" ;
 if (isset($_GET["searchFromTop"])){ // トップからのポスト
 	$_SESSION['search'] = $_GET["searchFromTop"] ; 
+	$sessionStr = $_SESSION['search'];
 }else if(isset($_GET["search"])){
 	$_SESSION['search'] = $_GET["search"] ; // このページからのポスト
-}else if(!$_GET["page"]){ // ゲットがない
+	$sessionStr = $_SESSION['search'];
+}else if(!isset($_GET["page"])){ // ゲットがない
 	unset($_SESSION['search']); //セッションの中身をクリア
 }
-echo '<input id="sbox5" name="search" type="text" value="'.$_SESSION['search'].'">'."\n";
+echo '<input id="sbox5" name="search" type="text" value="'.$sessionStr.'">'."\n";
 echo '<input type="hidden" name="page" value="1" >'."\n";
 echo '<input type="button" id="sbtn5" value="検索" onclick="onChangeSelect()">'."\n";
 ?>
