@@ -28,8 +28,8 @@ if(!isset($_POST["user_name"])){ // ポストがない場合
 <body>
 <div class="contentS">
 <?php
-$id_length = strlen(($_POST["user_name"]);
-$ps_length = strlen(($_POST["password"]);
+$id_length = strlen($_POST["user_name"]);
+$ps_length = strlen($_POST["password"]);
 $reg_str = "/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/"; // メールの判定
 	
 if($ps_length != 64){
