@@ -73,7 +73,7 @@ echo '</style>'."\n";
 <div style="margin-top:140px;">  </div>
 <div class="content2">
 <?php
-//mb_language('japanese');
+mb_language('japanese');
 mb_internal_encoding('UTF-8');
 
 $email = $admin_info[0]['mail'] ;
