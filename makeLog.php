@@ -46,9 +46,9 @@ function makeLog($logText) {
 	$rec_time = date("Y-m-d").'T'.date("H:i:s");
 
 	//メモリ上の配列に追加
-	if(!$log_data || $log_data == null){
+	//if(!$log_data || $log_data == null){
 		$log_data = [];
-	}
+	//}
 	
 	if(count($log_data) < 100){ 
 		$log_data[] = $rec_time.' ## '.$_SERVER["REMOTE_ADDR"].' ## '.$logText ;
