@@ -272,6 +272,15 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= 'makeLog(\'管理者のパスワード再発行のメールをシステムから管理者のメールアドレスへ送信。\') ;'."\n";
 	
 	//ロックを解除
+	
+	$inputText1 .= '$fileName = \'accountData.php\' ;'."\n";
+	$inputText1 .= 'copy($fileName, $fileName.\'copy\');'."\n";
+	$inputText1 .= 'unlink($fileName);'."\n";
+	$inputText1 .= 'copy($fileName.\'copy\', $fileName);'."\n";
+	$inputText1 .= 'unlink($fileName.\'copy\');'."\n";
+
+
+	
 	$inputText1 .= 'require_once \'accountData.php\';'."\n";
 	$inputText1 .= '$admin_info[0][\'rock\'] = 0 ;'."\n";
 
@@ -342,16 +351,29 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$inputText .= \'$user_info = \'.var_export($user_info,true).\' ;\'."\n";'."\n";
 	$inputText1 .= '$inputText .= \'$site_setting = \'.var_export($site_setting,true).\' ;\'."\n";'."\n";
 	$inputText1 .= '$inputText .= \'?>\'."\n";'."\n";
-	$inputText1 .= '$fp = fopen(\'accountData.php\', \'w\');'."\n";
+	
+
+	$inputText1 .= '$fp = fopen(\'accountData.php\', \'a\');'."\n";
+	$inputText1 .= 'if (flock($fp, LOCK_EX)) {'."\n";
+	$inputText1 .= 'ftruncate($fp, 0);'."\n";
 	$inputText1 .= 'fwrite($fp, $inputText);'."\n";
-	$inputText1 .= 'fclose($fp);'."\n";
+	$inputText1 .= 'fflush($fp);'."\n";
+	$inputText1 .= 'flock($fp, LOCK_UN);'."\n";
+	$inputText1 .= '}fclose($fp);'."\n";
+	
+
+	//$inputText1 .= '$fp = fopen(\'accountData.php\', \'w\');'."\n";
+	//$inputText1 .= 'fwrite($fp, $inputText);'."\n";
+	//$inputText1 .= 'fclose($fp);'."\n";
+	
+	
 	//メッセージ
 	$inputText1 .= 'echo "管理者アカウントのロックを解除し、パスワードを再発行しました。<br>" ;'."\n";
 	$inputText1 .= 'echo "仮パスワードをメールで送信しましたので確認してください。<br><br>" ;'."\n";
 	$inputText1 .= 'echo "<a href=\"login.php\">ログインフォームへ</a><br><br>" ;'."\n";
 	
 	//自己ファイルを削除
-	$inputText1 .= 'unlink(\''.$filename.'\');'."\n";
+	//$inputText1 .= 'unlink(\''.$filename.'\');'."\n";
 		
 	$inputText1 .= '?>'."\n";
 	$inputText1 .= '</body></html>'."\n";
