@@ -204,7 +204,6 @@ if(!$login){
 		}
 	}		
 }
-	
 
 //ロック解除するためのメール送信
 function sendMessage($mailAddress, $id) {
@@ -222,18 +221,10 @@ function sendMessage($mailAddress, $id) {
 
 	//$dirname = dirname($myPath); //親ディレクトリのパス
 	$dirname = str_replace('/loginProcess.php', '', $myPath);
-
 	$randomTxt = substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, 36).".php"; //36文字のランダムテキスト + 拡張子php
-
 	$text .= $dirname . "/" . $randomTxt ; //解除のURL
-
 	makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
 
-	// メール送信
-	//mb_send_mail( $to, $subject, $text);
-		
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
 	//現在のURLを取得し利用サービスを判断
 	$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ;
 
@@ -248,18 +239,14 @@ function sendMessage($mailAddress, $id) {
 		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
 		try {
 			$response = $sendgrid->send($emailArr);
-			//echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
 		} catch (Exception $e) {
 			echo '<hr>サーバーのエラーのためメールを送信できませんでした。メールでのロック解除はできません。'."\n";
 		}
-
+		
 	} else { // 通常のレンタルサーバー等の場合（mb_send_mail利用）
-
-		
-		mb_send_mail( $to, $subject, $text);
-		
-	}
 	
+		mb_send_mail( $to, $subject, $text);
+	}
 }
 
 //ロック解除するためのファイル作成
@@ -272,15 +259,11 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= 'makeLog(\'管理者のパスワード再発行のメールをシステムから管理者のメールアドレスへ送信。\') ;'."\n";
 	
 	//ロックを解除
-	
 	$inputText1 .= '$fileName = \'accountData.php\' ;'."\n";
 	$inputText1 .= 'copy($fileName, $fileName.\'copy\');'."\n";
 	$inputText1 .= 'unlink($fileName);'."\n";
 	$inputText1 .= 'copy($fileName.\'copy\', $fileName);'."\n";
 	$inputText1 .= 'unlink($fileName.\'copy\');'."\n";
-
-
-	
 	$inputText1 .= 'require_once \'accountData.php\';'."\n";
 	$inputText1 .= '$admin_info[0][\'rock\'] = 0 ;'."\n";
 
@@ -314,36 +297,17 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$text .= \''.$id.'\'."\n"; '."\n";
 	$inputText1 .= '$text .= \'管理者パスワード：　\'; '."\n";
 	$inputText1 .= '$text .= \''.$randomPass.'\'."\n"."\n"; '."\n";
-	
-	
-/*
-	if(strpos($url,\'.herokuapp.com\') !== false){ 
-	require \'vendor/autoload.php\';
-	$emailArr = new \SendGrid\Mail\Mail();
-	$emailArr->setSubject($subject);
-	$emailArr->addTo($to);
-	$emailArr->addContent(\'text/plain\', $text);
-	$sendgrid = new \SendGrid(getenv(\'SENDGRID_API_KEY\'));
-	$response = $sendgrid->send($emailArr);
-	}else{ mb_send_mail( $to, $subject, $text); }
-*/	
 	$inputText1 .= '$url = (empty($_SERVER[\'HTTPS\']) ? \'http://\' : \'https://\').$_SERVER[\'HTTP_HOST\'].$_SERVER[\'REQUEST_URI\'] ;'."\n";
-	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n";
+	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n";  // Heroku の場合（SendGrid利用）
 	$inputText1 .= 'require \'vendor/autoload.php\';'."\n";
-	
 	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
-	
 	$inputText1 .= '$emailArr->setFrom(\'system@yookan.com\', \'\');'."\n";
-	
 	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
 	$inputText1 .= '$emailArr->addTo($to,\'\');'."\n";
 	$inputText1 .= '$emailArr->addContent(\'text/plain\', $text);'."\n";
 	$inputText1 .= '$sendgrid = new \SendGrid(getenv(\'SENDGRID_API_KEY\'));'."\n";
 	$inputText1 .= '$response = $sendgrid->send($emailArr);'."\n";
-	$inputText1 .= '}else{ mb_send_mail( $to, $subject, $text); }'."\n";
-
-		
-	//$inputText1 .= ' mb_send_mail( $to, $subject, $text); '."\n";
+	$inputText1 .= '}else{ mb_send_mail( $to, $subject, $text); }'."\n"; // 通常のレンタルサーバー等の場合（mb_send_mail利用）
 
 	//アカウントデータを上書きするコードの生成
 	$inputText1 .= '$inputText = \'<?php\'."\n";'."\n";
@@ -352,7 +316,6 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$inputText .= \'$site_setting = \'.var_export($site_setting,true).\' ;\'."\n";'."\n";
 	$inputText1 .= '$inputText .= \'?>\'."\n";'."\n";
 	
-
 	$inputText1 .= '$fp = fopen(\'accountData.php\', \'a\');'."\n";
 	$inputText1 .= 'if (flock($fp, LOCK_EX)) {'."\n";
 	$inputText1 .= 'ftruncate($fp, 0);'."\n";
@@ -361,19 +324,13 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= 'flock($fp, LOCK_UN);'."\n";
 	$inputText1 .= '}fclose($fp);'."\n";
 	
-
-	//$inputText1 .= '$fp = fopen(\'accountData.php\', \'w\');'."\n";
-	//$inputText1 .= 'fwrite($fp, $inputText);'."\n";
-	//$inputText1 .= 'fclose($fp);'."\n";
-	
-	
 	//メッセージ
 	$inputText1 .= 'echo "管理者アカウントのロックを解除し、パスワードを再発行しました。<br>" ;'."\n";
 	$inputText1 .= 'echo "仮パスワードをメールで送信しましたので確認してください。<br><br>" ;'."\n";
 	$inputText1 .= 'echo "<a href=\"login.php\">ログインフォームへ</a><br><br>" ;'."\n";
 	
 	//自己ファイルを削除
-	//$inputText1 .= 'unlink(\''.$filename.'\');'."\n"; // 検証の際はコメント化する
+	$inputText1 .= 'unlink(\''.$filename.'\');'."\n"; // 検証の際はコメント化する
 		
 	$inputText1 .= '?>'."\n";
 	$inputText1 .= '</body></html>'."\n";
