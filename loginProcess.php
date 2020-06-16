@@ -237,15 +237,18 @@ function sendMessage($mailAddress, $id) {
 		require 'vendor/autoload.php';
 		$emailArr = new \SendGrid\Mail\Mail();
 		//$emailArr->setFrom($mail, $name);
+		
+		$emailArr->setFrom("mirko@mirko.jp", "あああ");
+		
 		$emailArr->setSubject($subject);
-		$emailArr->addTo($to);
+		$emailArr->addTo($to,"ううううううううううううう");
 		$emailArr->addContent("text/plain", $text);
 		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
 		try {
 			$response = $sendgrid->send($emailArr);
-			//echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
+			echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
 		} catch (Exception $e) {
-			//echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
+			echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
 		}
 
 	} else { // 通常のレンタルサーバー等の場合（mb_send_mail利用）
