@@ -269,7 +269,7 @@ function makeSearchResult($alldata,$admin_info,$user_info){
 	$keyArr = [] ;
 	
 	//ポスト文字列からキーワードを取り出し
-	if (isset($_SESSION['search']){ 
+	if (isset($_SESSION['search'])){ 
 
 		$keyString = $_SESSION['search'] ;
 		$keyString = str_replace('　', ' ', $keyString); //大文字スペースを小文字スペースに置換
