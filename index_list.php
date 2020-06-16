@@ -266,26 +266,31 @@ if (!file_exists($fileName)) {
 //検索の結果を返す関数
 function makeSearchResult($alldata,$admin_info,$user_info){
 
-	//ポスト文字列からキーワードを取り出し
-	$keyString = $_SESSION['search'] ;
-	$keyString = str_replace('　', ' ', $keyString); //大文字スペースを小文字スペースに置換
-	$keyString = str_replace('            ', '           ', $keyString); 
-	$keyString = str_replace('           ', '          ', $keyString); 
-	$keyString = str_replace('          ', '         ', $keyString); 
-	$keyString = str_replace('         ', '        ', $keyString); 
-	$keyString = str_replace('        ', '       ', $keyString); 
-	$keyString = str_replace('       ', '      ', $keyString); 
-	$keyString = str_replace('      ', '     ', $keyString); 
-	$keyString = str_replace('     ', '    ', $keyString); 
-	$keyString = str_replace('    ', '   ', $keyString); 
-	$keyString = str_replace('   ', '  ', $keyString); 
-	$keyString = str_replace('  ', ' ', $keyString); 
-	$keyString = str_replace(' ', '蓴鵲孅', $keyString); //ありえない文字を区切り文字に
-	$keyArr = explode('蓴鵲孅', $keyString); //キーワードを配列に格納
+	$keyArr = [] ;
 	
-	for ($i=0; $i<count($keyArr); $i++) { 
-		$keyArr[$i] = mb_convert_kana($keyArr[$i], "KVa"); //全角文字と半角文字を統一
-		$keyArr[$i] = mb_strtolower($keyArr[$i]); //大文字は小文字に変換
+	//ポスト文字列からキーワードを取り出し
+	if (isset($_SESSION['search']){ 
+
+		$keyString = $_SESSION['search'] ;
+		$keyString = str_replace('　', ' ', $keyString); //大文字スペースを小文字スペースに置換
+		$keyString = str_replace('            ', '           ', $keyString); 
+		$keyString = str_replace('           ', '          ', $keyString); 
+		$keyString = str_replace('          ', '         ', $keyString); 
+		$keyString = str_replace('         ', '        ', $keyString); 
+		$keyString = str_replace('        ', '       ', $keyString); 
+		$keyString = str_replace('       ', '      ', $keyString); 
+		$keyString = str_replace('      ', '     ', $keyString); 
+		$keyString = str_replace('     ', '    ', $keyString); 
+		$keyString = str_replace('    ', '   ', $keyString); 
+		$keyString = str_replace('   ', '  ', $keyString); 
+		$keyString = str_replace('  ', ' ', $keyString); 
+		$keyString = str_replace(' ', '蓴鵲孅', $keyString); //ありえない文字を区切り文字に
+		$keyArr = explode('蓴鵲孅', $keyString); //キーワードを配列に格納
+		
+		for ($i=0; $i<count($keyArr); $i++) { 
+			$keyArr[$i] = mb_convert_kana($keyArr[$i], "KVa"); //全角文字と半角文字を統一
+			$keyArr[$i] = mb_strtolower($keyArr[$i]); //大文字は小文字に変換
+		}
 	}
 	
 	$alldata_result = [] ;
@@ -338,7 +343,7 @@ function pageOffset($alldataOffset , $limit){
 		$startCount = (($_GET["page"] - 1 ) * $limit) ;
 	}
 	//ループのラストに入れる配列の番号
-	if ($_GET["page"] == $pageCount) { //ゲットとページ総数が同じ（＝ラストページ）の場合
+	if (isset($_GET["page"]) && $_GET["page"] == $pageCount) { //ゲットとページ総数が同じ（＝ラストページ）の場合
 		$lastCount = count($alldataOffset) ; //最終数はデータの配列数に同数
 	}else if($pageCount == 0){ // ヒット数が０件だった場合
 		$lastCount = 0 ; 
@@ -403,11 +408,16 @@ function displayPageCounter($alldata , $limit){
 	
 	//ページ数（リミット数で除して小数点以下切り上げ）
 	$pageCount = ceil(count($alldata) / $limit) ; 
+	
+	$search_param = "" ;
+	if (isset($_GET["search"])){
+		$search_param = $_GET["search"] ;
+	}
 	for ($i=0; $i<$pageCount; $i++) {
 		if((!isset($_GET["page"]) && $i == 0) || ($_GET["page"] == ($i + 1))){ // ゲットなし　または　ゲットのページ番号の場合
-			echo '<a href="index_list.php?search='.$_GET["search"].'&sort_select='.$sort_param.'&page='.($i + 1).'" class="counter_child  counter_child_bold">'.($i + 1).'</a> '."\n";
+			echo '<a href="index_list.php?search='.$search_param.'&sort_select='.$sort_param.'&page='.($i + 1).'" class="counter_child  counter_child_bold">'.($i + 1).'</a> '."\n";
 		}else{
-			echo '<a href="index_list.php?search='.$_GET["search"].'&sort_select='.$sort_param.'&page='.($i + 1).'" class="counter_child">'.($i + 1).'</a> '."\n";
+			echo '<a href="index_list.php?search='.$search_param.'&sort_select='.$sort_param.'&page='.($i + 1).'" class="counter_child">'.($i + 1).'</a> '."\n";
 		}
 	}
 	echo '</div>'."\n";
