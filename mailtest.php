@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', "On");
 require 'vendor/autoload.php';
 $email = new \SendGrid\Mail\Mail();
 $email->setFrom("mirko@mirko.jp", "送信者A");
