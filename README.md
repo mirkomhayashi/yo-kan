@@ -31,7 +31,7 @@ SSL未対応（http）のサーバーの場合は、ログインIDやパスワ�
 # Note for Heroku
 当アプリは php-mbstring を利用しています。通常のPHPが利用できるレンタルサーバーであれば、ほとんどの場合あらかじめインストールされていますので意識する必要はありません。Herokuで利用する場合はインストールが必要です。以下のように **composer.json** に require で追加してください。<br>
 また、Herokuでは メール送信用の mb_send_mail関数が利用できないため、**SendGrid**を利用します。これも composer.json に require で追加します。
-その後、**composer update** コマンドでアップデートすると、**composer.lock** が生成されます。
+その後、**composer update** コマンドでアップデートすると、**composer.lock** が生成されます。その状態でデプロイしてください。
 
 **composer.json**
 ```bash
