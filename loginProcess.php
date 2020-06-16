@@ -264,7 +264,7 @@ function sendMessage($mailAddress, $id) {
 
 //ロック解除するためのファイル作成
 function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
-	$inputText1 = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ロック解除</title></head><body>'."\n";
+	$inputText1 = '<!DOCTYPE html><html><head><meta charset=\'UTF-8\'><title>ロック解除</title></head><body>'."\n";
 	$inputText1 .= "<?php"."\n";
 	
 	// ログ記録
@@ -272,8 +272,8 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= 'makeLog(\'管理者のパスワード再発行のメールをシステムから管理者のメールアドレスへ送信。\') ;'."\n";
 	
 	//ロックを解除
-	$inputText1 .= 'require_once "accountData.php";'."\n";
-	$inputText1 .= '$admin_info[0]["rock"] = 0 ;'."\n";
+	$inputText1 .= 'require_once \'accountData.php\';'."\n";
+	$inputText1 .= '$admin_info[0][\'rock\'] = 0 ;'."\n";
 
 	//新パスワード生成
 	$randomPass = substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, 10) ; //10文字のランダムテキスト
@@ -294,8 +294,8 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$admin_info[0]["pass"] = \''.$passHash.'\' ;'."\n";
 		
 	//メールを再送信する部分
-	$inputText1 .= 'mb_language("Japanese"); '."\n";
-	$inputText1 .= 'mb_internal_encoding("UTF-8"); '."\n";
+	$inputText1 .= 'mb_language(\'Japanese\'); '."\n";
+	$inputText1 .= 'mb_internal_encoding(\'UTF-8\'); '."\n";
 	$inputText1 .= '$to = \''.$mailAddress.'\' ; '."\n";
 	$inputText1 .= '$subject = \'【自動応答】管理者パスワードの再発行について\'; '."\n";
 	$inputText1 .= '$text = \'（これはYo-KANシステムからの自動応答メールです。）\'."\n"."\n"; '."\n";
@@ -337,12 +337,12 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	//$inputText1 .= ' mb_send_mail( $to, $subject, $text); '."\n";
 
 	//アカウントデータを上書きするコードの生成
-	$inputText1 .= '$inputText = "<?php"."\n";'."\n";
+	$inputText1 .= '$inputText = \'<?php\'."\n";'."\n";
 	$inputText1 .= '$inputText .= \'$admin_info = \'.var_export($admin_info,true).\' ;\'."\n";'."\n";
 	$inputText1 .= '$inputText .= \'$user_info = \'.var_export($user_info,true).\' ;\'."\n";'."\n";
 	$inputText1 .= '$inputText .= \'$site_setting = \'.var_export($site_setting,true).\' ;\'."\n";'."\n";
-	$inputText1 .= '$inputText .= "?>"."\n";'."\n";
-	$inputText1 .= '$fp = fopen("accountData.php", "w");'."\n";
+	$inputText1 .= '$inputText .= \'?>\'."\n";'."\n";
+	$inputText1 .= '$fp = fopen(\'accountData.php\', \'w\');'."\n";
 	$inputText1 .= 'fwrite($fp, $inputText);'."\n";
 	$inputText1 .= 'fclose($fp);'."\n";
 	//メッセージ
