@@ -4,7 +4,7 @@ require 'vendor/autoload.php';
 $email = new \SendGrid\Mail\Mail();
 $email->setFrom("test@example.com", "送信者A");
 $email->setSubject("TestMail漢字");
-$email->addTo("catfish.m@nifty.com", "受信者B");
+$email->addTo("mirko@mirko.jp", "受信者B");
 $email->addContent("text/plain", "日本語 English");
 $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
 try {
