@@ -373,7 +373,7 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= 'echo "<a href=\"login.php\">ログインフォームへ</a><br><br>" ;'."\n";
 	
 	//自己ファイルを削除
-	//$inputText1 .= 'unlink(\''.$filename.'\');'."\n";
+	//$inputText1 .= 'unlink(\''.$filename.'\');'."\n"; // 検証の際はコメント化する
 		
 	$inputText1 .= '?>'."\n";
 	$inputText1 .= '</body></html>'."\n";

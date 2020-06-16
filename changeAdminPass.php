@@ -48,59 +48,6 @@ echo '<form action="logout.php" method="POST" style="display:inline">'."\n";
 echo '<input name="logout" class="logoutButton" type="submit" value="ログアウト"></form>'."\n";
 echo "<hr>"."\n";
 
-if(isset($_POST["password1"])) { //ポストがある
-
-	$passHash1  = hash("sha256",($_POST["password1"]."opendata"));
-	$passHash2  = hash("sha256",($_POST["password2"]."opendata"));
-	for ($i = 0; $i < 1000; $i++){ 
-		$passHash1  = hash("sha256",$passHash1);
-		$passHash2  = hash("sha256",$passHash2);
-	}
-
-	$ps_length = strlen(($passHash1);
-	if($ps_length != 64 || $passHash1 != $passHash2){
-		echo '不正なパスワードです。'."\n";
-		
-		// ログ記録
-		makeLog($_SESSION['sessionname'].' =>【不正アクセス注意】不正なアクセスにより、管理者のパスワードを '.$_POST["password1"].' に変更を試みたが失敗') ;
-		
-	}else{
-		echo 'パスワードを変更しました。<br><br>'."\n";
-	
-		// ログ記録
-		makeLog($_SESSION['sessionname'].' => 管理者のパスワードが正常に変更された') ;
-
-		//メモリ上の配列を修正
-		$admin_info[0]['pass'] = $passHash1 ;
-
-		//書き込むテキストの生成
-		$inputText = '<?php'."\n";
-		$inputText .= '$admin_info = '.var_export($admin_info,true).' ;'."\n"; 
-		$inputText .= '$user_info = '.var_export($user_info,true).' ;'."\n"; 
-		$inputText .= '$site_setting = '.var_export($site_setting,true).' ;'."\n"; 
-		$inputText .= '?>'."\n";
-
-		$fp = fopen("accountData.php", "a");
-		if (flock($fp, LOCK_EX)) {  // 排他ロックを確保
-			ftruncate($fp, 0);      // ファイルを切り詰め
-			fwrite($fp, $inputText);
-			fflush($fp);            // 出力をフラッシュしてから
-			flock($fp, LOCK_UN);    // ロックを解放
-		}
-		fclose($fp);
-	}
-
-}else{
-	
-	echo '<h2>管理者 '.hsc($_SESSION['sessionname'])." のパスワード変更</h2>"."\n";
-	echo '<form action="changeAdminPass.php" name="sousin_submit" method="POST">'."\n";
-	echo '<span style="display:inline-block;width:230px;">変更後パスワード：</span><input class="textBoxN" id="pass_word1" type="password" pattern="^[0-9A-Za-z]+$" required> ※半角英数 10～30字<br>'."\n";
-	echo '<span style="display:inline-block;width:230px;">変更後パスワード(再入力)：</span><input class="textBoxN" id="pass_word2" type="password" pattern="^[0-9A-Za-z]+$" required> ※半角英数 10～30字<br>'."\n";
-	echo '<input name="password1" id="pass_hide1" type="hidden">'."\n";
-	echo '<input name="password2" id="pass_hide2" type="hidden">'."\n";
-	echo '<input type="button" id="sosinbutton" value="パスワード変更" onclick="excute_submit()">'."\n";
-	echo '</form>';
-}
 echo "<hr>"."\n";
 echo '<a href="redirect.html">管理画面に戻る</a>'; 
 ?>
