@@ -217,10 +217,17 @@ function sendMessage($mailAddress, $id) {
 	$text = "（これはYo-KANシステムからの自動応答メールです。このメールには返信できません。）"."\n"."\n";
 	$text .= "管理者アカウントへのログインに５回失敗したため、管理者アカウントがロックされました。"."\n";
 	$text .= "ロックを解除する場合は以下のURLにアクセスしてください"."\n";
+	
 	$myPath = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; //このファイルのフルパス
-	$dirname = dirname($myPath); //親ディレクトリのパス
+	//追加
+	$myPath = str_replace('loginProcess.php', '', $myPath);
+	
+	//$dirname = dirname($myPath); //親ディレクトリのパス
+
 	$randomTxt = substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, 36).".php"; //36文字のランダムテキスト + 拡張子php
-	$text .= $dirname . "/" . $randomTxt ; //解除のURL
+
+	//$text .= $dirname . "/" . $randomTxt ; //解除のURL
+	$text .= $myPath . $randomTxt ; //解除のURL
 
 	makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
 
