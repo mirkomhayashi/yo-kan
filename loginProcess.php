@@ -214,7 +214,7 @@ function sendMessage($mailAddress, $id) {
 	// 変数の設定
 	$to = $mailAddress ;
 	$subject = "【自動応答】アカウントのロックについて";
-	$text = "（これはYo-KANシステムからの自動応答メールです。）"."\n"."\n";
+	$text = "（これはYo-KANシステムからの自動応答メールです。このメールには返信できません。）"."\n"."\n";
 	$text .= "管理者アカウントへのログインに５回失敗したため、管理者アカウントがロックされました。"."\n";
 	$text .= "ロックを解除する場合は以下のURLにアクセスしてください"."\n";
 	$myPath = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; //このファイルのフルパス
@@ -238,17 +238,17 @@ function sendMessage($mailAddress, $id) {
 		$emailArr = new \SendGrid\Mail\Mail();
 		//$emailArr->setFrom($mail, $name);
 		
-		$emailArr->setFrom("mirko@mirko.jp", "あああ");
+		$emailArr->setFrom("system@yookan.com", "");
 		
 		$emailArr->setSubject($subject);
-		$emailArr->addTo($to,"ううううううううううううう");
+		$emailArr->addTo($to,"");
 		$emailArr->addContent("text/plain", $text);
 		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
 		try {
 			$response = $sendgrid->send($emailArr);
-			echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
+			//echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
 		} catch (Exception $e) {
-			echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
+			echo '<hr>サーバーのエラーのためメールを送信できませんでした。メールでのロック解除はできません。'."\n";
 		}
 
 	} else { // 通常のレンタルサーバー等の場合（mb_send_mail利用）
