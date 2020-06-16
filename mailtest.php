@@ -13,7 +13,7 @@ try {
     print_r($response->headers());
     print $response->body() . "\n";
 	
-	echo 'メール送信しましたyoyo。'. "\n";
+	echo 'メール送信しましたyoyoyoyo。'. "\n";
 	echo getenv('SENDGRID_API_KEY'). "\n";
 
 } catch (Exception $e) {
