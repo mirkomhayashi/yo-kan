@@ -321,14 +321,19 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$url = (empty($_SERVER[\'HTTPS\']) ? \'http://\' : \'https://\').$_SERVER[\'HTTP_HOST\'].$_SERVER[\'REQUEST_URI\'] ;'."\n";
 	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n";
 	$inputText1 .= 'require \'vendor/autoload.php\';'."\n";
+	
 	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
+	
+	$inputText1 .= '$emailArr->setFrom(\'system@yookan.com\', \'\');'."\n";
+	
 	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
-	$inputText1 .= '$emailArr->addTo($to);'."\n";
+	$inputText1 .= '$emailArr->addTo($to,\'\');'."\n";
 	$inputText1 .= '$emailArr->addContent(\'text/plain\', $text);'."\n";
 	$inputText1 .= '$sendgrid = new \SendGrid(getenv(\'SENDGRID_API_KEY\'));'."\n";
 	$inputText1 .= '$response = $sendgrid->send($emailArr);'."\n";
 	$inputText1 .= '}else{ mb_send_mail( $to, $subject, $text); }'."\n";
-	
+
+		
 	//$inputText1 .= ' mb_send_mail( $to, $subject, $text); '."\n";
 
 	//アカウントデータを上書きするコードの生成
