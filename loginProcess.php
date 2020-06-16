@@ -222,7 +222,6 @@ function sendMessage($mailAddress, $id) {
 
 	//$dirname = dirname($myPath); //親ディレクトリのパス
 	$dirname = str_replace('/loginProcess.php', '', $myPath);
-	echo $dirname ;
 
 	$randomTxt = substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, 36).".php"; //36文字のランダムテキスト + 拡張子php
 
@@ -249,6 +248,11 @@ function sendMessage($mailAddress, $id) {
 		$emailArr->setSubject($subject);
 		$emailArr->addTo($to,"");
 		$emailArr->addContent("text/plain", $text);
+		
+		
+		echo $text ;
+		
+		
 		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
 		try {
 			$response = $sendgrid->send($emailArr);
@@ -322,7 +326,7 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$response = $sendgrid->send($emailArr);
 	}else{ mb_send_mail( $to, $subject, $text); }
 */	
-	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n";
+	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n"; ///////////////////////////////////////////////////////////url
 	$inputText1 .= 'require \'vendor/autoload.php\';'."\n";
 	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
 	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
