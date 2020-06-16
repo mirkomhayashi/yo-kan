@@ -241,18 +241,10 @@ function sendMessage($mailAddress, $id) {
 		
 		require 'vendor/autoload.php';
 		$emailArr = new \SendGrid\Mail\Mail();
-		//$emailArr->setFrom($mail, $name);
-		
 		$emailArr->setFrom("system@yookan.com", "");
-		
 		$emailArr->setSubject($subject);
 		$emailArr->addTo($to,"");
 		$emailArr->addContent("text/plain", $text);
-		
-		
-		echo $text ;
-		
-		
 		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
 		try {
 			$response = $sendgrid->send($emailArr);
@@ -314,7 +306,7 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$text .= \'管理者パスワード：　\'; '."\n";
 	$inputText1 .= '$text .= \''.$randomPass.'\'."\n"."\n"; '."\n";
 	
-	$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ;
+	
 /*
 	if(strpos($url,\'.herokuapp.com\') !== false){ 
 	require \'vendor/autoload.php\';
@@ -326,7 +318,8 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$response = $sendgrid->send($emailArr);
 	}else{ mb_send_mail( $to, $subject, $text); }
 */	
-	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n"; ///////////////////////////////////////////////////////////url
+	$inputText1 .= '$url = (empty($_SERVER[\'HTTPS\']) ? \'http://\' : \'https://\').$_SERVER[\'HTTP_HOST\'].$_SERVER[\'REQUEST_URI\'] ;'."\n";
+	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n";
 	$inputText1 .= 'require \'vendor/autoload.php\';'."\n";
 	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
 	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
