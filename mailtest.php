@@ -2,7 +2,7 @@
 ini_set('display_errors', "On");
 require 'vendor/autoload.php';
 $email = new \SendGrid\Mail\Mail();
-$email->setFrom("test@example.com", "送信者A");
+$email->setFrom("catfish.m@nifty.com", "送信者A");
 $email->setSubject("TestMail漢字");
 $email->addTo("mirko@mirko.jp", "受信者B");
 $email->addContent("text/plain", "日本語 English");
