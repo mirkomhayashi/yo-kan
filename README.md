@@ -28,6 +28,17 @@ SSL未対応（http）のサーバーの場合は、ログインIDやパスワ�
 ただし、パスワードは10文字以上のものを、ブラウザJavascriptで SHA256ハッシュ（ソルト＆ストレッチング）した上で送信するため、平文送信でも解析が難しい状態にはなっています。このあたりは<b>自己責任において判断</b>してください。<br>
 ログイン時にパスワードを5回連続誤ると、そのアカウントはロックされます。管理者アカウントがロックされると、解除するためのメールが管理者へ送信されます。
 
+# Note for Heroku
+当アプリは php-mbstring を利用しています。通常のPHPが利用できるレンタルサーバーであれば、ほとんどの場合あらかじめインストールされていますが、Herokuで利用する場合は以下のように composer.json に require で追加してください。<br>
+また、Herokuでは メール送信用の mb_send_mail関数が利用できないため、SendGridを利用します。これも composer.json に require で追加します。
+
+** composer.json **
+```bash
+git clone https://github.com/hoge/~
+cd examples
+python demo.py
+```
+
 # Author
 林　正洋
  
