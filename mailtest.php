@@ -13,7 +13,7 @@ try {
     print_r($response->headers());
     print $response->body() . "\n";
 	
-	echo 'メール送信しましたyo。';
+	echo 'メール送信しましたyoyo。';
 
 } catch (Exception $e) {
     echo 'Caught exception: '. $e->getMessage() ."\n";
