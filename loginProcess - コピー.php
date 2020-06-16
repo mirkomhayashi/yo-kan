@@ -225,36 +225,7 @@ function sendMessage($mailAddress, $id) {
 	makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
 
 	// メール送信
-	//mb_send_mail( $to, $subject, $text);
-		
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-	//現在のURLを取得し利用サービスを判断
-	$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ;
-
-	if(strpos($url,'.herokuapp.com') !== false){ // Heroku の場合（SendGrid利用）
-		
-		require 'vendor/autoload.php';
-		$emailArr = new \SendGrid\Mail\Mail();
-		//$emailArr->setFrom($mail, $name);
-		$emailArr->setSubject($subject);
-		$emailArr->addTo($to);
-		$emailArr->addContent("text/plain", $text);
-		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
-		try {
-			$response = $sendgrid->send($emailArr);
-			//echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
-		} catch (Exception $e) {
-			//echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
-		}
-
-	} else { // 通常のレンタルサーバー等の場合（mb_send_mail利用）
-
-		
-		mb_send_mail( $to, $subject, $text);
-		
-	}
-	
+	mb_send_mail( $to, $subject, $text);
 }
 
 //ロック解除するためのファイル作成
@@ -300,30 +271,7 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$text .= \''.$id.'\'."\n"; '."\n";
 	$inputText1 .= '$text .= \'管理者パスワード：　\'; '."\n";
 	$inputText1 .= '$text .= \''.$randomPass.'\'."\n"."\n"; '."\n";
-	
-	$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ;
-/*
-	if(strpos($url,\'.herokuapp.com\') !== false){ 
-	require \'vendor/autoload.php\';
-	$emailArr = new \SendGrid\Mail\Mail();
-	$emailArr->setSubject($subject);
-	$emailArr->addTo($to);
-	$emailArr->addContent(\'text/plain\', $text);
-	$sendgrid = new \SendGrid(getenv(\'SENDGRID_API_KEY\'));
-	$response = $sendgrid->send($emailArr);
-	}else{ mb_send_mail( $to, $subject, $text); }
-*/	
-	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n";
-	$inputText1 .= 'require \'vendor/autoload.php\';'."\n";
-	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
-	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
-	$inputText1 .= '$emailArr->addTo($to);'."\n";
-	$inputText1 .= '$emailArr->addContent(\'text/plain\', $text);'."\n";
-	$inputText1 .= '$sendgrid = new \SendGrid(getenv(\'SENDGRID_API_KEY\'));'."\n";
-	$inputText1 .= '$response = $sendgrid->send($emailArr);'."\n";
-	$inputText1 .= '}else{ mb_send_mail( $to, $subject, $text); }'."\n";
-	
-	//$inputText1 .= ' mb_send_mail( $to, $subject, $text); '."\n";
+	$inputText1 .= ' mb_send_mail( $to, $subject, $text); '."\n";
 
 	//アカウントデータを上書きするコードの生成
 	$inputText1 .= '$inputText = "<?php"."\n";'."\n";
