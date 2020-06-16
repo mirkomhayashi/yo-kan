@@ -128,7 +128,7 @@ if(!$login){
 	echo "<a href='login.php'>ログインフォームへ</a><br><br>" ;
 	
 	
-	if(!$_SESSION['loginFailure']){ //ログイン失敗のセッションが無ければ失敗セッションを新規作成
+	if(!isset($_SESSION['loginFailure'])){ //ログイン失敗のセッションが無ければ失敗セッションを新規作成
 		$_SESSION['loginFailure'][] = array('ID'=>$_POST["user_name"] , 'count'=>1 );
 		
 		// ログ記録
