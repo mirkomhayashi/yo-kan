@@ -30,14 +30,30 @@ for ($i=0; $i<count($alldata); $i++) {
 }
 
 // エスケープ(xss対策)して、小文字に統一
-$sort = mb_strtolower( htmlspecialchars($_GET["sort"]) );
-$key = mb_strtolower( htmlspecialchars(urldecode($_GET["key"])) ); //URLデコードもしておく
-$license = mb_strtolower( htmlspecialchars($_GET["license"]) );
-$offset = mb_strtolower( htmlspecialchars($_GET["offset"]) );
-$limit = mb_strtolower( htmlspecialchars($_GET["limit"]) );
-$jsonld = mb_strtolower( htmlspecialchars($_GET["jsonld"]) );
-$jsonp = htmlspecialchars($_GET["jsonp"]) ;
-$format = mb_strtolower( htmlspecialchars($_GET["format"]) );
+if(isset($_GET["sort"])){
+	$sort = mb_strtolower( htmlspecialchars($_GET["sort"]) );
+}
+if(isset($_GET["key"])){
+	$key = mb_strtolower( htmlspecialchars(urldecode($_GET["key"])) ); //URLデコードもしておく
+}
+if(isset($_GET["license"])){
+	$license = mb_strtolower( htmlspecialchars($_GET["license"]) );
+}
+if(isset($_GET["offset"])){
+	$offset = mb_strtolower( htmlspecialchars($_GET["offset"]) );
+}
+if(isset($_GET["limit"])){
+	$limit = mb_strtolower( htmlspecialchars($_GET["limit"]) );
+}
+if(isset($_GET["jsonld"])){
+	$jsonld = mb_strtolower( htmlspecialchars($_GET["jsonld"]) );
+}
+if(isset($_GET["jsonp"])){
+	$jsonp = htmlspecialchars($_GET["jsonp"]) ;
+}
+if(isset($_GET["format"])){
+	$format = mb_strtolower( htmlspecialchars($_GET["format"]) );
+}
 
 $arr["status"] = "yes"; //ステータスはyesがデフォルト
 
