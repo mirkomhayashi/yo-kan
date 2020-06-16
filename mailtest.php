@@ -11,8 +11,9 @@ try {
     print $response->statusCode() . "\n";
     print_r($response->headers());
     print $response->body() . "\n";
+	
+	echo 'メール送信しましたyo。';
+
 } catch (Exception $e) {
     echo 'Caught exception: '. $e->getMessage() ."\n";
 }
-echo 'メール送信しました。';
-?>
