@@ -222,6 +222,7 @@ function sendMessage($mailAddress, $id) {
 
 	//$dirname = dirname($myPath); //親ディレクトリのパス
 	$dirname = str_replace('/loginProcess.php', '', $myPath);
+	echo $dirname ;
 
 	$randomTxt = substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, 36).".php"; //36文字のランダムテキスト + 拡張子php
 
