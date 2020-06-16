@@ -77,57 +77,35 @@ mb_language('japanese');
 mb_internal_encoding('UTF-8');
 
 $email = $admin_info[0]['mail'] ;
-$subject = '【自動応答】Yo-KANのお問い合わせフォームからのメッセージを受信';
+$subject = '【自動応答】メールフォームからのメッセージを受信';
 
 $mail = $_SESSION['mail'];
 $name = $_SESSION['name'];
 $comment = $_SESSION['comment'];
 
-$body = "……　Yo-KANのお問い合わせフォームから以下のメッセージを受信しました　……"."\n";
+$body = "……　以下のメッセージを受信しました　……"."\n";
 $body .= "-------------------------------------------"."\n";
 $body .= "送信者 : ".hsc($name)."\n"."\n";
 $body .= "メールアドレス : ".$mail."\n"."\n";
 $body .= "お問い合わせ内容 : "."\n";
 $body .= $comment ;
 
-//現在のURLを取得し利用サービスを判断
-$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ;
+//headerを設定
+$charset = "UTF-8";
+$headers['MIME-Version'] 	= "1.0";
+$headers['Content-Type'] 	= "text/plain; charset=".$charset;
+$headers['Content-Transfer-Encoding'] 	= "8bit";
 
-if(strpos($url,'.herokuapp.com') !== false){ // Heroku の場合（SendGrid利用）
-	
-	require 'vendor/autoload.php';
-	$emailArr = new \SendGrid\Mail\Mail();
-	$emailArr->setFrom($mail, $name);
-	$emailArr->setSubject($subject);
-	$emailArr->addTo($email, "サイト管理者");
-	$emailArr->addContent("text/plain", $body);
-	$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
-	try {
-		$response = $sendgrid->send($emailArr);
-		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
-	} catch (Exception $e) {
-		echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
-	}
+//headerを編集
+foreach ($headers as $key => $val) {
+	$arrheader[] = $key . ': ' . $val;
+}
+$strHeader = implode("\n", $arrheader);
 
-} else { // 通常のレンタルサーバー等の場合（mb_send_mail利用）
-
-	//headerを設定
-	$charset = "UTF-8";
-	$headers['MIME-Version'] 	= "1.0";
-	$headers['Content-Type'] 	= "text/plain; charset=".$charset;
-	$headers['Content-Transfer-Encoding'] 	= "8bit";
-
-	//headerを編集
-	foreach ($headers as $key => $val) {
-		$arrheader[] = $key . ': ' . $val;
-	}
-	$strHeader = implode("\n", $arrheader);
-
-	if (mb_send_mail($email, $subject, $body , $strHeader)){
-		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
-	}else{
-		echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
-	}
+if (mb_send_mail($email, $subject, $body , $strHeader)){
+	echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
+}else{
+	echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
 }
 ?>
 </div>
