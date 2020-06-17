@@ -30,8 +30,7 @@ SSL未対応（http）のサーバーの場合は、ログインIDやパスワ�
 
 # Note for Free cloud
 当アプリは php-mbstring（マルチバイト文字処理の関数群）を利用しています。通常のPHPが利用できるレンタルサーバーであれば、ほとんどの場合あらかじめインストールされていますので意識する必要はありませんが、クラウドサーバーで利用する場合は各自でインストールしてください。Herokuでは下記のように **composer.json** に require で追加します。<br>
-また、AzureやHerokuの無料プランでは メール送信用の mb_send_mail関数が利用できないため、**SendGrid**を利用します。SendGridのアカウントとAPIキーを取得した上で、下記のようにcomposer.json に require で追加します。
-その後、**composer update** コマンドでアップデートすると、**composer.lock** が生成されます。その状態でデプロイしてください。
+また、AzureやHerokuの無料プランでは メール送信用の mb_send_mail関数が利用できないため、**SendGrid**を利用します。下記のようにcomposer.json に require で追加してください。その後、**composer update** コマンドでアップデートすると、**composer.lock** が生成されます。その状態でデプロイしてください。（事前にSendGridのアカウントとAPIキーを取得し、利用するクラウドサービス上にて設定しておくのが前提です。）
 
 **composer.json**
 ```bash
