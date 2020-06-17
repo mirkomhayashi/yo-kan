@@ -161,12 +161,11 @@ if(!$login){
 				$_SESSION['loginFailure'][$i]['count'] = 0; //セッションの失敗カウントを0にリセット
 
 				if($admin_info[0]['id'] === $_POST["user_name"]){
-					echo "アカウントID: ".$_POST["user_name"]." はロックされました。対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
-					echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご注意ください。" ;
+
+					echo "アカウントID: ".$_POST["user_name"]." はロックされました。<br>" ;
 					
 					// ログ記録
 					makeLog('【不正アクセスに注意】ID:'.$_POST["user_name"].'（管理者）でのログインに連続5回失敗したのでアカウントロック') ;
-					makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
 
 					$admin_info[0]['rock'] = 1 ; //管理者をロック
 					sendMessage( $admin_info[0]['mail'], $admin_info[0]['id'] ) ; // ロック解除するためのメール送信関数
@@ -191,7 +190,6 @@ if(!$login){
 				$inputText .= '?>'."\n";
 				
 				$fp = fopen("accountData.php", "a");
-				//$fp = fopen($fileName, "a");
 				if (flock($fp, LOCK_EX)) {  // 排他ロックを確保
 					ftruncate($fp, 0);      // ファイルを切り詰め
 					fwrite($fp, $inputText);
@@ -219,17 +217,23 @@ function sendMessage($mailAddress, $id) {
 	
 	$myPath = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; //このファイルのフルパス
 
-	//$dirname = dirname($myPath); //親ディレクトリのパス
+	//$dirname = dirname($myPath); //親ディレクトリのパス //以下の通り変更
 	$dirname = str_replace('/loginProcess.php', '', $myPath);
 	$randomTxt = substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, 36).".php"; //36文字のランダムテキスト + 拡張子php
 	$text .= $dirname . "/" . $randomTxt ; //解除のURL
-	makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
 
-	//現在のURLを取得し利用サービスを判断
-	$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ;
+	// mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
+	if(mb_send_mail( $to, $subject, $text)){
 
-	if(strpos($url,'.herokuapp.com') !== false){ // Heroku の場合（SendGrid利用）
-		
+		makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
+
+		echo "対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
+		echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご確認ください。" ;
+		makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
+
+	// mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
+	} else {
+
 		require 'vendor/autoload.php';
 		$emailArr = new \SendGrid\Mail\Mail();
 		$emailArr->setFrom("system@yookan.com", "");
@@ -238,14 +242,18 @@ function sendMessage($mailAddress, $id) {
 		$emailArr->addContent("text/plain", $text);
 		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
 		try {
-			$response = $sendgrid->send($emailArr);
+			makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
+
+			$response = $sendgrid->send($emailArr); // メール送信
+			echo "対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
+			echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご確認ください。" ;
+			makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
+
 		} catch (Exception $e) {
-			echo '<hr>サーバーのエラーのためメールを送信できませんでした。メールでのロック解除はできません。'."\n";
+
+			echo 'サーバーのエラーで、アカウントロック解除のための案内メールを送信できませんでした。'."\n";
+			makeLog('アカウントロック解除のための案内メールを送信しようとしたがサーバーエラーで送信できず') ;
 		}
-		
-	} else { // 通常のレンタルサーバー等の場合（mb_send_mail利用）
-	
-		mb_send_mail( $to, $subject, $text);
 	}
 }
 
@@ -297,9 +305,10 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$text .= \''.$id.'\'."\n"; '."\n";
 	$inputText1 .= '$text .= \'管理者パスワード：　\'; '."\n";
 	$inputText1 .= '$text .= \''.$randomPass.'\'."\n"."\n"; '."\n";
-	$inputText1 .= '$url = (empty($_SERVER[\'HTTPS\']) ? \'http://\' : \'https://\').$_SERVER[\'HTTP_HOST\'].$_SERVER[\'REQUEST_URI\'] ;'."\n";
-	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n";  // Heroku の場合（SendGrid利用）
-	$inputText1 .= 'require \'vendor/autoload.php\';'."\n";
+
+	//メール送信
+	$inputText1 .= 'if(!(mb_send_mail( $to, $subject, $text))){'."\n"; // 通常のレンタルサーバー等の場合（mb_send_mail利用）
+	$inputText1 .= 'require \'vendor/autoload.php\';'."\n"; // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
 	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
 	$inputText1 .= '$emailArr->setFrom(\'system@yookan.com\', \'\');'."\n";
 	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
@@ -307,7 +316,7 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$emailArr->addContent(\'text/plain\', $text);'."\n";
 	$inputText1 .= '$sendgrid = new \SendGrid(getenv(\'SENDGRID_API_KEY\'));'."\n";
 	$inputText1 .= '$response = $sendgrid->send($emailArr);'."\n";
-	$inputText1 .= '}else{ mb_send_mail( $to, $subject, $text); }'."\n"; // 通常のレンタルサーバー等の場合（mb_send_mail利用）
+	$inputText1 .= '}'."\n";
 
 	//アカウントデータを上書きするコードの生成
 	$inputText1 .= '$inputText = \'<?php\'."\n";'."\n";
