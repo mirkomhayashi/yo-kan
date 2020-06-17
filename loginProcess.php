@@ -162,21 +162,12 @@ if(!$login){
 
 				if($admin_info[0]['id'] === $_POST["user_name"]){
 
-<<<<<<< HEAD
-=======
-					////////////////////////////////////////////////////////////////////////////////////////////////
-					// echo "アカウントID: ".$_POST["user_name"]." はロックされました。対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
-					// echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご注意ください。" ;
-
->>>>>>> 2f1cca9c3f64d21b7e8db90094c84461f74e977e
 					echo "アカウントID: ".$_POST["user_name"]." はロックされました。<br>" ;
 					
 					// ログ記録
 					makeLog('【不正アクセスに注意】ID:'.$_POST["user_name"].'（管理者）でのログインに連続5回失敗したのでアカウントロック') ;
-<<<<<<< HEAD
-=======
+
 					// makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
->>>>>>> 2f1cca9c3f64d21b7e8db90094c84461f74e977e
 
 					$admin_info[0]['rock'] = 1 ; //管理者をロック
 					sendMessage( $admin_info[0]['mail'], $admin_info[0]['id'] ) ; // ロック解除するためのメール送信関数
@@ -222,6 +213,7 @@ function sendMessage($mailAddress, $id) {
 	// 変数の設定
 	$to = $mailAddress ;
 	$subject = "【自動応答】アカウントのロックについて";
+	$headers = "From: system@yo-kan.com";
 	$text = "（これはYo-KANシステムからの自動応答メールです。このメールには返信できません。）"."\n"."\n";
 	$text .= "管理者アカウントへのログインに５回失敗したため、管理者アカウントがロックされました。"."\n";
 	$text .= "ロックを解除する場合は以下のURLにアクセスしてください"."\n";
@@ -233,67 +225,38 @@ function sendMessage($mailAddress, $id) {
 	$randomTxt = substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, 36).".php"; //36文字のランダムテキスト + 拡張子php
 	$text .= $dirname . "/" . $randomTxt ; //解除のURL
 
-<<<<<<< HEAD
-=======
-
-	////////////////////////////////////////////////////////////////////////////
-
->>>>>>> 2f1cca9c3f64d21b7e8db90094c84461f74e977e
-	// mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
-	if(mb_send_mail( $to, $subject, $text)){
-
+	// Worning（警告エラー）をException（例外エラー）に変えるハンドラ
+	set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
+		// error was suppressed with the @-operator
+		if (0 === error_reporting()) {
+			return false;
+		}
+		throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+	});
+	
+	try { // mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
+	
+		// mb_send_mailの警告エラーを検出
+		mb_send_mail( $to, $subject, $text, $headers);
 		makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
 
 		echo "対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
 		echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご確認ください。" ;
 		makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
 
-	// mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
-	} else {
-<<<<<<< HEAD
-=======
+	} catch (Exception $e) { // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
 
-		require 'vendor/autoload.php';
-		$emailArr = new \SendGrid\Mail\Mail();
-		$emailArr->setFrom("system@yookan.com", "");
-		$emailArr->setSubject($subject);
-		$emailArr->addTo($to,"");
-		$emailArr->addContent("text/plain", $text);
-		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
 		try {
-
-			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
-
+			require 'vendor/autoload.php';
+			$emailArr = new \SendGrid\Mail\Mail();
+			$emailArr->setFrom("system@yo-kan.com", "");
+			$emailArr->setSubject($subject);
+			$emailArr->addTo($to,"");
+			$emailArr->addContent("text/plain", $text);
+			$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+			
 			$response = $sendgrid->send($emailArr); // メール送信
-			echo "対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
-			echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご確認ください。" ;
-			makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
-
-
-		} catch (Exception $e) {
-
-			echo 'サーバーのエラーで、アカウントロック解除のための案内メールを送信できませんでした。'."\n";
-			makeLog('アカウントロック解除のための案内メールを送信しようとしたがサーバーエラーで送信できず') ;
-		}
-	}
-
-/*
-	//現在のURLを取得し利用サービスを判断
-	$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ;
->>>>>>> 2f1cca9c3f64d21b7e8db90094c84461f74e977e
-
-		require 'vendor/autoload.php';
-		$emailArr = new \SendGrid\Mail\Mail();
-		$emailArr->setFrom("system@yookan.com", "");
-		$emailArr->setSubject($subject);
-		$emailArr->addTo($to,"");
-		$emailArr->addContent("text/plain", $text);
-		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
-		try {
 			makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
-
-			$response = $sendgrid->send($emailArr); // メール送信
 			echo "対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
 			echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご確認ください。" ;
 			makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
@@ -304,10 +267,6 @@ function sendMessage($mailAddress, $id) {
 			makeLog('アカウントロック解除のための案内メールを送信しようとしたがサーバーエラーで送信できず') ;
 		}
 	}
-*/
-
-
-
 }
 
 //ロック解除するためのファイル作成
@@ -345,13 +304,14 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	}
 	
 	$inputText1 .= '$admin_info[0]["pass"] = \''.$passHash.'\' ;'."\n";
-		
+
 	//メールを再送信する部分
 	$inputText1 .= 'mb_language(\'Japanese\'); '."\n";
 	$inputText1 .= 'mb_internal_encoding(\'UTF-8\'); '."\n";
 	$inputText1 .= '$to = \''.$mailAddress.'\' ; '."\n";
 	$inputText1 .= '$subject = \'【自動応答】管理者パスワードの再発行について\'; '."\n";
-	$inputText1 .= '$text = \'（これはYo-KANシステムからの自動応答メールです。）\'."\n"."\n"; '."\n";
+	$inputText1 .= '$headers = \'From: system@yo-kan.com\';'."\n";
+	$inputText1 .= '$text = \'（これはYo-KANシステムからの自動応答メールです。このメールには返信できません。）\'."\n"."\n"; '."\n";
 	$inputText1 .= '$text .= \'管理者アカウントのパスワードを再発行しました。以下のIDとパスワードでログインしてください。\'."\n"; '."\n";
 	$inputText1 .= '$text .= \'ログイン後、パスワードは変更できます。\'."\n"."\n"; '."\n";
 	$inputText1 .= '$text .= \'管理者アカウントID：　\'; '."\n";
@@ -359,41 +319,24 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 	$inputText1 .= '$text .= \'管理者パスワード：　\'; '."\n";
 	$inputText1 .= '$text .= \''.$randomPass.'\'."\n"."\n"; '."\n";
 
-<<<<<<< HEAD
-	//メール送信
-	$inputText1 .= 'if(!(mb_send_mail( $to, $subject, $text))){'."\n"; // 通常のレンタルサーバー等の場合（mb_send_mail利用）
-	$inputText1 .= 'require \'vendor/autoload.php\';'."\n"; // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
-=======
-	///////////////////////////////////////////////////////////////////////////
-	$inputText1 .= 'if(!(mb_send_mail( $to, $subject, $text))){'."\n"; // 通常のレンタルサーバー等の場合（mb_send_mail利用）
-	$inputText1 .= 'require \'vendor/autoload.php\';'."\n"; // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
-	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
-	$inputText1 .= '$emailArr->setFrom(\'system@yookan.com\', \'\');'."\n";
-	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
-	$inputText1 .= '$emailArr->addTo($to,\'\');'."\n";
-	$inputText1 .= '$emailArr->addContent(\'text/plain\', $text);'."\n";
-	$inputText1 .= '$sendgrid = new \SendGrid(getenv(\'SENDGRID_API_KEY\'));'."\n";
-	$inputText1 .= '$response = $sendgrid->send($emailArr);'."\n";
-	$inputText1 .= '}'."\n";
+	// Worning（警告エラー）をException（例外エラー）に変えるハンドラ
+	$inputText1 .= 'set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {'."\n";
+	$inputText1 .= 'if (0 === error_reporting()) {return false;}'."\n";
+	$inputText1 .= 'throw new ErrorException($errstr, 0, $errno, $errfile, $errline);});'."\n";
 
-	/*
-	$inputText1 .= '$url = (empty($_SERVER[\'HTTPS\']) ? \'http://\' : \'https://\').$_SERVER[\'HTTP_HOST\'].$_SERVER[\'REQUEST_URI\'] ;'."\n";
-	$inputText1 .= 'if(strpos($url,\'.herokuapp.com\') !== false){'."\n";  // Heroku の場合（SendGrid利用）
-	$inputText1 .= 'require \'vendor/autoload.php\';'."\n";
->>>>>>> 2f1cca9c3f64d21b7e8db90094c84461f74e977e
+	//メール送信
+	$inputText1 .= 'try {'."\n";
+	$inputText1 .= 'mb_send_mail( $to, $subject, $text, $headers);'."\n"; // 通常のレンタルサーバー等の場合（mb_send_mail利用）
+	$inputText1 .= '} catch (Exception $e) {'."\n";
+	$inputText1 .= 'require \'vendor/autoload.php\';'."\n"; // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
 	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
-	$inputText1 .= '$emailArr->setFrom(\'system@yookan.com\', \'\');'."\n";
+	$inputText1 .= '$emailArr->setFrom(\'system@yo-kan.com\', \'\');'."\n";
 	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
 	$inputText1 .= '$emailArr->addTo($to,\'\');'."\n";
 	$inputText1 .= '$emailArr->addContent(\'text/plain\', $text);'."\n";
 	$inputText1 .= '$sendgrid = new \SendGrid(getenv(\'SENDGRID_API_KEY\'));'."\n";
 	$inputText1 .= '$response = $sendgrid->send($emailArr);'."\n";
-<<<<<<< HEAD
 	$inputText1 .= '}'."\n";
-=======
-	$inputText1 .= '}else{ mb_send_mail( $to, $subject, $text); }'."\n"; // 通常のレンタルサーバー等の場合（mb_send_mail利用）
-	*/
->>>>>>> 2f1cca9c3f64d21b7e8db90094c84461f74e977e
 
 	//アカウントデータを上書きするコードの生成
 	$inputText1 .= '$inputText = \'<?php\'."\n";'."\n";
