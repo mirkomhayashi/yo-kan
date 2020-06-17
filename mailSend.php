@@ -90,9 +90,44 @@ $body .= "メールアドレス : ".$mail."\n"."\n";
 $body .= "お問い合わせ内容 : "."\n";
 $body .= $comment ;
 
-//現在のURLを取得し利用サービスを判断
-$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ;
+/////////////////////////////////////////////////////////////////////////////////
+	//headerを設定
+	$charset = "UTF-8";
+	$headers['MIME-Version'] 	= "1.0";
+	$headers['Content-Type'] 	= "text/plain; charset=".$charset;
+	$headers['Content-Transfer-Encoding'] 	= "8bit";
 
+	//headerを編集
+	foreach ($headers as $key => $val) {
+		$arrheader[] = $key . ': ' . $val;
+	}
+	$strHeader = implode("\n", $arrheader);
+
+	if (mb_send_mail($email, $subject, $body , $strHeader)){ // mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
+		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
+
+	}else{ // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
+		require 'vendor/autoload.php';
+		$emailArr = new \SendGrid\Mail\Mail();
+		$emailArr->setFrom($mail, $name);
+		$emailArr->setSubject($subject);
+		$emailArr->addTo($email, "サイト管理者");
+		$emailArr->addContent("text/plain", $body);
+		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+		try {
+			$response = $sendgrid->send($emailArr);
+			echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
+		} catch (Exception $e) {
+			echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
+		}
+	}
+
+
+
+//現在のURLを取得し利用サービスを判断
+//$url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://').$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'] ;
+
+/*
 if(strpos($url,'.herokuapp.com') !== false){ // Heroku の場合（SendGrid利用）
 	
 	require 'vendor/autoload.php';
@@ -129,6 +164,7 @@ if(strpos($url,'.herokuapp.com') !== false){ // Heroku の場合（SendGrid利�
 		echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
 	}
 }
+*/
 ?>
 </div>
 <footer class="site-footer">
