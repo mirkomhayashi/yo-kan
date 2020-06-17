@@ -116,7 +116,7 @@ try { // mb_send_mail が使えるサーバーの場合（レンタルサーバ�
 
 	// mb_send_mailの警告エラーを検出
 	mb_send_mail($email, $subject, $body , $strHeader);
-	echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
+	echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>mb_send_mail<br><br><br><br>' ;
 	
 } catch (Exception $e) { // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
 
@@ -130,7 +130,7 @@ try { // mb_send_mail が使えるサーバーの場合（レンタルサーバ�
 	
 	try {
 		$response = $sendgrid->send($emailArr);
-		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br><br><br><br>' ;
+		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>SendGrid<br><br><br><br>' ;
 		
 	} catch (Exception $e) {
 		
