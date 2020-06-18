@@ -112,13 +112,37 @@ set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
     throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 });
 
+//　警告エラーの場合と、関数は起動するがメール送信をせずFalseを返す場合がある
+
 try { // mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
 
-	// mb_send_mailの警告エラーを検出
-	mb_send_mail($email, $subject, $body , $strHeader);
-	echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>mb_send_mail<br><br><br><br>' ;
+	// mb_send_mailの警告エラーを検出したら catch へ、falseを返したらSendGrid
+	if(mb_send_mail($email, $subject, $body , $strHeader)){
+		
+		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>mb_send_mail<br><br><br><br>' ;
+		
+	} else {
+		
+		require 'vendor/autoload.php';
+		$emailArr = new \SendGrid\Mail\Mail();
+		$emailArr->setFrom("system@yo-kan.com", $name);
+		$emailArr->setSubject($subject);
+		$emailArr->addTo($email, "サイト管理者");
+		$emailArr->addContent("text/plain", $body);
+		$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+		
+		try {
+			$response = $sendgrid->send($emailArr);
+			echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>SendGrid1<br><br><br><br>' ;
+			
+		} catch (Exception $e) {
+			
+			echo '<br><br><br>申し訳ありません。サーバーのエラーのため送信できませんでした。<br><br><br><br><br>' ;
+		}
+	}
 	
-} catch (Exception $e) { // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
+	
+} catch (Exception $e) { // 警告エラーはSendGridを利用
 
     require 'vendor/autoload.php';
 	$emailArr = new \SendGrid\Mail\Mail();
@@ -130,7 +154,7 @@ try { // mb_send_mail が使えるサーバーの場合（レンタルサーバ�
 	
 	try {
 		$response = $sendgrid->send($emailArr);
-		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>SendGrid<br><br><br><br>' ;
+		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>SendGrid2<br><br><br><br>' ;
 		
 	} catch (Exception $e) {
 		
