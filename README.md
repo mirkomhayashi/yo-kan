@@ -7,8 +7,8 @@ Yo-KAN を利用すれば、WordPress風のデータストアが実に簡単に�
 * <a href="http://yokan.php.xdomain.jp/" target="_blank">（無料レンタルサーバー）XFREE に設置</a><br>
 * <a href="http://yokan.starfree.jp/" target="_blank">（無料レンタルサーバー）スターサーバーフリー に設置</a><br>
 * <a href="https://ss1.xrea.com/yookan.s1010.xrea.com/" target="_blank">（無料レンタルサーバー）XREA Freeに設置（SSL対応）</a><br>
-* <a href="" target="_blank">（Free Paas cloud）Microsoft Azure</a><br>
-* <a href="https://yo-kan.herokuapp.com/" target="_blank">（Free Paas cloud）Heroku</a><br>
+* <a href="" target="_blank">（Free Paas cloud）Microsoft Azure にてデプロイ</a><br>
+* <a href="https://yo-kan.herokuapp.com/" target="_blank">（Free Paas cloud）Heroku にてデプロイ</a><br>
  
 # Requirement
 * PHP 7.0 以上（5系のPHPは未確認）
