@@ -3,7 +3,7 @@ Yo-KAN は CKAN や DKAN と同じような、データ公開のためのオー�
 Yo-KAN を利用すれば、WordPress風のデータストアが実に簡単に作成できます。
  
 # DEMO
-* <a href="https://www.mirko.jp/yo-kan/" target="_blank">メインのYo-KAN紹介サイト</a><br>
+* <a href="https://www.mirko.jp/yo-kan/" target="_blank">（VPSサーバー）メインのYo-KAN紹介サイト</a><br>
 * <a href="http://yokan.php.xdomain.jp/" target="_blank">（無料レンタルサーバー）XFREE に設置</a><br>
 * <a href="http://yokan.starfree.jp/" target="_blank">（無料レンタルサーバー）スターサーバーフリー に設置</a><br>
 * <a href="https://ss1.xrea.com/yookan.s1010.xrea.com/" target="_blank">（無料レンタルサーバー）XREA Freeに設置（SSL対応）</a><br>
