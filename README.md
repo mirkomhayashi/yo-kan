@@ -50,7 +50,7 @@ SENDGRID_USERNAME     yourname@example.com
 SENDGRID_PASSWORD     yourpassword
 SENDGRID_API_KEY      SG.xxxx......................................
 ```
-私はAsureとHerokuでデプロイできることは確認しましたが、腕に覚えがある方はその他いろいろな環境でお試しいただければと思います。<br>
+私はAzureとHerokuでデプロイできることは確認しましたが、腕に覚えがある方はその他いろいろな環境でお試しいただければと思います。<br>
 （AWSやGoogle Cloudは未確認ですが、SendGridの環境変数の設定さえちゃんとしていれば多分大丈夫でしょう。）
 
 # Author
