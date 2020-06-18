@@ -118,7 +118,7 @@ try {
 
 	if(mb_send_mail($email, $subject, $body , $strHeader)){ // mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
 		
-		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>mb_send_mail<br><br><br><br>' ;
+		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br>This system used "mb_send_mail" to send mail.<br><br><br>' ;
 		
 	} else { // mb_send_mail関数は起動するがメール送信をせずFalseを返す場合（SendGridを利用）
 		
@@ -132,7 +132,7 @@ try {
 		
 		try {
 			$response = $sendgrid->send($emailArr);
-			echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>SendGrid1<br><br><br><br>' ;
+			echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br>This system used "SendGrid" to send mail.<br><br><br>' ;
 			
 		} catch (Exception $e) {
 			
@@ -152,7 +152,7 @@ try {
 	
 	try {
 		$response = $sendgrid->send($emailArr);
-		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>SendGrid2<br><br><br><br>' ;
+		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br><br>This system used "SendGrid" to send mail.<br><br><br>' ;
 		
 	} catch (Exception $e) {
 		
