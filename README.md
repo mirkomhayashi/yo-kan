@@ -1,6 +1,6 @@
 <img src="https://www.mirko.jp/yo-kan/img_uploaded/sample_logo.png" />
 
-# （準備中）オープンデータプラットフォーム Yo-KAN
+# （準備中です！！）オープンデータプラットフォーム Yo-KAN
 Yo-KAN は CKAN や DKAN と同じような、データ公開のためのオープンソースプログラムです。
 Yo-KAN を利用すれば、WordPress風のデータストアが実に簡単に作成できます。
  
