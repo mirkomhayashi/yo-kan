@@ -31,7 +31,7 @@ SSL未対応（http）のサーバーの場合は、ログインIDやパスワ�
 # Note for free cloud
 当アプリは php-mbstring（マルチバイト文字処理の関数群）を利用しています。PHPが利用できる通常のレンタルサーバーであれば、ほとんどの場合あらかじめインストールされていますので意識する必要はありませんが、クラウドサーバーで利用する場合は各自でインストールしてください。（下記のように **composer.json** に require で追加）<br>
 また、AzureやHerokuの無料プランのように メール送信用の mb_send_mail関数が利用できない場合は **SendGrid**を利用します。下記のようにcomposer.json に require で追加してください。<br>
-その後、**composer update** コマンドでアップデートすると、**composer.lock** が生成されます。その状態でデプロイしてください。（事前にSendGridのアカウントとAPIキーを取得し、利用するクラウドサービス上にて設定しておくのが前提です。）
+その後、**composer update** コマンドでアップデートすると、**composer.lock** が生成されます。その状態でデプロイしてください。（事前にSendGridのアカウントとAPIキーを取得し、利用するクラウドサービス上にて環境変数の設定がしてあるのが前提です。）
 
 **composer.json**
 ```bash
@@ -44,7 +44,7 @@ SSL未対応（http）のサーバーの場合は、ログインIDやパスワ�
 ```
 まあ、Freeクラウドで構築するより普通のレンタルサーバーにFTPで流し込むほうがずっと簡単かと思います。<br>
 私はAsure App Service（Paas）とHerokuでデプロイできることは確認しましたが、その他いろいろな環境でお試しいただければと思います。<br>
-（AWSやGoogle Cloud Platformは未確認ですがSendGridの環境変数の設定さえちゃんとしていれば多分大丈夫でしょう。）
+（AWSやGoogle Cloudは未確認ですが、SendGridの環境変数の設定さえちゃんとしていれば多分大丈夫でしょう。）
 
 # Author
 林　正洋
