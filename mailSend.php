@@ -83,7 +83,7 @@ $mail = $_SESSION['mail'];
 $name = $_SESSION['name'];
 $comment = $_SESSION['comment'];
 
-$body = "（Yo-KANのお問い合わせフォームから以下のメッセージを受信しました。このメールには返信できません。"."\n";
+$body = "（Yo-KAN のお問い合わせフォームから以下のメッセージを受信しました。このメールには返信できません。）"."\n";
 $body .= "-------------------------------------------"."\n";
 $body .= "送信者 : ".hsc($name)."\n"."\n";
 $body .= "メールアドレス : ".$mail."\n"."\n";
@@ -112,16 +112,15 @@ set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
     throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 });
 
-//　警告エラーの場合と、関数は起動するがメール送信をせずFalseを返す場合がある
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//　mb_send_mail関数は、「警告エラー」の場合（Azure）と、関数は起動するがメール送信をせずFalseを返す場合（Heroku）があることに留意
+try {
 
-try { // mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
-
-	// mb_send_mailの警告エラーを検出したら catch へ、falseを返したらSendGrid
-	if(mb_send_mail($email, $subject, $body , $strHeader)){
+	if(mb_send_mail($email, $subject, $body , $strHeader)){ // mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
 		
 		echo '<br><br><br>サイト管理者へメールを送信しました。ありがとうございました。<br>mb_send_mail<br><br><br><br>' ;
 		
-	} else {
+	} else { // mb_send_mail関数は起動するがメール送信をせずFalseを返す場合（SendGridを利用）
 		
 		require 'vendor/autoload.php';
 		$emailArr = new \SendGrid\Mail\Mail();
@@ -141,8 +140,7 @@ try { // mb_send_mail が使えるサーバーの場合（レンタルサーバ�
 		}
 	}
 	
-	
-} catch (Exception $e) { // 警告エラーはSendGridを利用
+} catch (Exception $e) { // mb_send_mail関数が警告エラーとなる場合（SendGridを利用）
 
     require 'vendor/autoload.php';
 	$emailArr = new \SendGrid\Mail\Mail();

@@ -234,17 +234,39 @@ function sendMessage($mailAddress, $id) {
 		throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 	});
 	
-	try { // mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
 	
-		// mb_send_mailの警告エラーを検出
-		mb_send_mail( $to, $subject, $text, $headers);
-		makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	//　mb_send_mail関数は、「警告エラー」の場合（Azure）と、関数は起動するがメール送信をせずFalseを返す場合（Heroku）があることに留意
+	try {
+		if(mb_send_mail( $to, $subject, $text, $headers)){ // mb_send_mail が使えるサーバーの場合（レンタルサーバー等）
+			makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
+			echo "対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
+			echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご確認ください。" ;
+			makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
+			
+		} else { // mb_send_mail関数は起動するがメール送信をせずFalseを返す場合（SendGridを利用）
+			
+			try {
+				require 'vendor/autoload.php';
+				$emailArr = new \SendGrid\Mail\Mail();
+				$emailArr->setFrom("system@yo-kan.com", "");
+				$emailArr->setSubject($subject);
+				$emailArr->addTo($to,"");
+				$emailArr->addContent("text/plain", $text);
+				$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+				$response = $sendgrid->send($emailArr); // メール送信
+				makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
+				echo "対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
+				echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご確認ください。" ;
+				makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
 
-		echo "対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
-		echo "※ メールが届かない場合は迷惑メールとしてブロックされている可能性がありますのでご確認ください。" ;
-		makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
+			} catch (Exception $e) {
+				echo 'サーバーのエラーで、アカウントロック解除のための案内メールを送信できませんでした。'."\n";
+				makeLog('アカウントロック解除のための案内メールを送信しようとしたがサーバーエラーで送信できず') ;
+			}
+		}
 
-	} catch (Exception $e) { // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
+	} catch (Exception $e) { // mb_send_mail関数が警告エラーとなる場合（SendGridを利用）
 
 		try {
 			require 'vendor/autoload.php';
@@ -254,7 +276,6 @@ function sendMessage($mailAddress, $id) {
 			$emailArr->addTo($to,"");
 			$emailArr->addContent("text/plain", $text);
 			$sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
-			
 			$response = $sendgrid->send($emailArr); // メール送信
 			makeFileForRelease($randomTxt, $id, $mailAddress, $dirname); //解除のためのファイル作成関数
 			echo "対応方法を管理者のメールへ送信しましたのでご確認ください。<br>" ;
@@ -262,7 +283,6 @@ function sendMessage($mailAddress, $id) {
 			makeLog('アカウントロック解除のための案内メールをシステムから管理者のメールアドレスへ送信') ;
 
 		} catch (Exception $e) {
-
 			echo 'サーバーのエラーで、アカウントロック解除のための案内メールを送信できませんでした。'."\n";
 			makeLog('アカウントロック解除のための案内メールを送信しようとしたがサーバーエラーで送信できず') ;
 		}
@@ -326,9 +346,18 @@ function makeFileForRelease($filename, $id, $mailAddress, $dirname) {
 
 	//メール送信
 	$inputText1 .= 'try {'."\n";
-	$inputText1 .= 'mb_send_mail( $to, $subject, $text, $headers);'."\n"; // 通常のレンタルサーバー等の場合（mb_send_mail利用）
+	$inputText1 .= 'if(!(mb_send_mail( $to, $subject, $text, $headers))){'."\n"; // 通常のレンタルサーバー等の場合（mb_send_mail利用）
+	$inputText1 .= 'require \'vendor/autoload.php\';'."\n"; // mb_send_mail関数は起動するがメール送信をせずFalseを返す場合（SendGridを利用）
+	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
+	$inputText1 .= '$emailArr->setFrom(\'system@yo-kan.com\', \'\');'."\n";
+	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
+	$inputText1 .= '$emailArr->addTo($to,\'\');'."\n";
+	$inputText1 .= '$emailArr->addContent(\'text/plain\', $text);'."\n";
+	$inputText1 .= '$sendgrid = new \SendGrid(getenv(\'SENDGRID_API_KEY\'));'."\n";
+	$inputText1 .= '$response = $sendgrid->send($emailArr);'."\n";
+	$inputText1 .= '}'."\n";
 	$inputText1 .= '} catch (Exception $e) {'."\n";
-	$inputText1 .= 'require \'vendor/autoload.php\';'."\n"; // mb_send_mail が使えない場合（無料クラウドなど）はSendGridを利用
+	$inputText1 .= 'require \'vendor/autoload.php\';'."\n"; // mb_send_mail関数が警告エラーとなる場合（SendGridを利用）
 	$inputText1 .= '$emailArr = new \SendGrid\Mail\Mail();'."\n";
 	$inputText1 .= '$emailArr->setFrom(\'system@yo-kan.com\', \'\');'."\n";
 	$inputText1 .= '$emailArr->setSubject($subject);'."\n";
