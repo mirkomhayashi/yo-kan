@@ -4,9 +4,9 @@ Yo-KAN を利用すれば、WordPress風のデータストアが実に簡単に�
  
 # DEMO
 * <a href="https://www.mirko.jp/yo-kan/" target="_blank">メインのYo-KAN紹介サイト</a><br>
-* <a href="http://yokan.php.xdomain.jp/" target="_blank">無料レンタルサーバー XFREE に設置したデモ</a><br>
-* <a href="http://yokan.starfree.jp/" target="_blank">スターサーバーフリー に設置したデモ</a><br>
-* <a href="https://ss1.xrea.com/yookan.s1010.xrea.com/" target="_blank">XREA Free（無料プラン）に設置したデモ（SSL対応）</a><br>
+* <a href="http://yokan.php.xdomain.jp/" target="_blank">（無料レンタルサーバー）XFREE に設置</a><br>
+* <a href="http://yokan.starfree.jp/" target="_blank">（無料レンタルサーバー）スターサーバーフリー に設置</a><br>
+* <a href="https://ss1.xrea.com/yookan.s1010.xrea.com/" target="_blank">（無料レンタルサーバー）XREA Freeに設置（SSL対応）</a><br>
 * <a href="https://yo-kan.herokuapp.com/" target="_blank">（Free Paas cloud）Microsoft Azure の 無料試用版</a><br>
 * <a href="" target="_blank">（Free Paas cloud）Heroku (free dyno)</a><br>
  
